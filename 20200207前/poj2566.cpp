@@ -48,6 +48,7 @@ void solve() {
 }
 
 int main() {
+	freopen("input.txt", "r", stdin);
 	while (cin >> n >> k && n != 0 && k != 0) {
 		read();
 		while (k--) {
