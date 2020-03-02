@@ -25,6 +25,20 @@
             "label": "g++ run",
             "type": "shell",
             "command": "/mnt/c/Users/dell/Documents/MyDocuments/MyCode/a.out",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": []
+        }
+        {
+            "label": "g++ build && run",
+            "type": "shell",
+            "command": "/mnt/c/Users/dell/Documents/MyDocuments/MyCode/a.out",
             "dependsOn": [
                 "g++ build"
             ],
