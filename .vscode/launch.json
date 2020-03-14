@@ -6,7 +6,7 @@
             "name": "gdb debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/mnt/c/Users/dell/Documents/MyDocuments/MyCode/a.out",
+            "program": "/mnt/c/Users/jiaku/Documents/MyDocuments/MyCode/a.out",
             "args": [],
             "stopAtEntry": false,
             "miDebuggerArgs": "",
