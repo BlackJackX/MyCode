@@ -1,5 +1,6 @@
 /*
 tle+wa
+dfs和bfs改成老师给的就过了....
 */
 #include <cstdio>
 #include <algorithm>
@@ -9,9 +10,10 @@ tle+wa
 
 using namespace std;
 
+typedef long long ll;
 const int MAX_N = 10000+10;
 const int MAX_M = (100000+10)*4;
-const int INF = 0x3f3f3f3f;
+const int INF = 0x7fffffff;
 
 int n, m, s, t;
 int edgenum;
@@ -69,14 +71,14 @@ bool bfs(int s, int t) {
     while(!q.empty()) {
         int u = q.front();
         q.pop();
+        if(u == t)
+            return true;
         for(int i=head[u]; i>=0; i=e[i].next) {
             int v = e[i].v;
             if(level[v] != 0 || e[i].cap == 0)
                 continue;
             level[v] = level[u] + 1;
             q.push(v);
-            if(v == t)
-                return true;
         }
     }
     return false;
@@ -86,23 +88,36 @@ bool bfs(int s, int t) {
 int dfs(int u, int t, int bn) {
     if(u == t)
         return bn;
-    int flow = 0;
+    
+    //int flow = 0;
+    int left = bn;
     for(int i=head[u]; i>=0; i=e[i].next) {
-        if(bn == 0)
-            break;
+        // if(bn == 0)
+        //     break;
         int v = e[i].v;
-        if(e[i].cap == 0 || level[u]+1 != level[v])
+        int c = e[i].cap;
+        if(c <= 0 || level[u]+1 != level[v])
             continue;
-        int cur_flow = dfs(v, t, min(e[i].cap, bn));
-        flow += cur_flow;        
-        e[i].cap -= cur_flow;
-        e[i^1].cap += cur_flow;
+        int flow = dfs(v, t, min(left, c));
+        if(flow <= 0)
+            continue;
+        e[i].cap -= flow;
+        e[i^1].cap += flow;
+        left -= flow;
+        if(left==0)
+            break;
+        // int cur_flow = dfs(v, t, min(e[i].cap, bn));
+        // flow += cur_flow;        
+        // e[i].cap -= cur_flow;
+        // e[i^1].cap += cur_flow;
     }
-    return flow;
+    if(left > 0)      //不加这里会tle一个
+        level[u] = 0;
+    return bn-left;
 }
 
-int dinic(int s, int t) {
-    int flow = 0;
+ll dinic(int s, int t) {
+    ll flow = 0;
     while(bfs(s, t)) {
         //printgh();
         flow += dfs(s, t, INF);
@@ -116,8 +131,7 @@ int main() {
     freopen("input.txt", "r", stdin);
     while(scanf("%d%d%d%d", &n, &m, &s, &t)==4) {
         read();
-        printf("%d\n", dinic(s, t));
-        break;    
+        printf("%lld\n", dinic(s, t));
     }
 
     return 0;
