@@ -1,53 +1,78 @@
+/*
+trie树, 别的都挺简单
+*/
 #include <cstdio>
 #include <algorithm>
 #include <cstring>
 
 using namespace std;
 
-int t, n, k;
-struct node {
-    node* ptr[26];
-    int num, len;
-};
+const int MAX_LEN = 2e6+10;
 
-void insert(node* root, char* s) {
-    for(int i=0 ;i<strlen(s); i++) {
-        if(root->ptr[s[i]-'A'] != NULL) {
-            root->num += 1;
-        }
-        else {
-            root->ptr[s[i]-'A'] = new node();
-            root->num = 1;
-            root->ptr[s[i]-'A']->num = root->num + 1;
-        }
-    }
+int t, n, k;
+char s[MAX_LEN];
+
+struct node {
+    char c;
+    int num;
+    node* next[26];
+} *root;
+
+node* create_node(char c) {
+    node* p = new node();
+    p->c = c;
+    p->num = 0;
+    for(int i=0; i<26; i++)
+        p->next[i] = NULL;
+    return p;
+}
+
+void insert(char* s, node* root) {
+    if(s[0] == '\0')
+        return;
+    node* p = root->next[s[0]-'A'];
+    if(p == NULL)
+        p = create_node(s[0]);
+    p->num++;
+    root->next[s[0]-'A'] = p;
+    insert(s+1, p);
 }
 
 void read() {
-    char s[1000010];
-    node* root = new node();
-    root->num = 0;
-    root->len = 0;
+    root = create_node(' ');
     for(int i=0; i<n; i++) {
-        scanf("%s", s+1);
-        s[0] = ' ';
-        insert(root, s);
+        scanf("%s", s);
+        insert(s, root);        
     }
 }
 
-void solve() {
-    if()
-
-
+void del_node(node* root) {
+    if(root == NULL)
+        return;
+    for(int i=0; i<26; i++)
+        del_node(root->next[i]);
+    delete root;
 }
 
+int preorder(node* root) {
+    if(root == NULL)
+        return 0;
+    int ans = 0;
+    ans += root->num / k;
+    for(int i=0; i<26; i++)
+        ans += preorder(root->next[i]);
+    return ans;
+}
+
+
 int main() {
+    freopen("input.txt", "r", stdin);
     scanf("%d", &t);
     for(int ce=1; ce<=t; ce++) {
         scanf("%d%d", &n, &k);
         read();
-        solve();
-
+        printf("Case #%d: %d\n", ce, preorder(root));
+        del_node(root);
     }
 
 
