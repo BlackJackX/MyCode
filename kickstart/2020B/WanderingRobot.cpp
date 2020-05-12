@@ -1,18 +1,89 @@
 /*
 tle了
-有更省的方法, 明天写
-
+有更省的方法
+用log控制精度, 明天写
 */
 
 #include <cstdio>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
 const int MAX_LEN = 1e2+10;
 
+double lg[MAX_LEN];
 int t, w, h, l, u, r, d;
 float a[MAX_LEN], b[MAX_LEN];
+
+double get_one_sqare_p(int x, int y) {
+    //这里有问题!!!
+    double path_num_lg = lg[x+y-2] - (lg[x-1] + lg[y-1]);
+    //上面
+    double one_path_p = -(x+y-2);
+    return pow(2, one_path_p + path_num_lg);
+}
+
+double solve() {
+    if(r+d == w+h)
+        return 0;
+
+    double sum = 0;
+
+    int s = l + d;  
+    for(int i=l-1, j=d+1; i>=1 && j<=w; i--, j++) {
+        if(i == h) {
+            double tmp = 0;
+            for(int k=1; k<j; k++)
+                tmp += get_one_sqare_p(h-1, k);
+            sum += tmp / 2;
+        }
+        else if(j == w) {
+            double tmp = 0;
+            for(int k=1; k<i; k++) 
+                tmp += get_one_sqare_p(k, w-1);
+            sum += tmp / 2;
+        }
+        else
+            sum += get_one_sqare_p(i, j);
+    }
+    s = r + u;  
+    for(int i=r+1, j=u-1; i<=h && j>=1; i++, j--) {
+        if(i == h) {
+            double tmp = 0;
+            for(int k=1; k<j; k++)
+                tmp += get_one_sqare_p(h-1, k);
+            sum += tmp / 2;
+        }
+        else if(j == w) {
+            double tmp = 0;
+            for(int k=1; k<i; k++) 
+                tmp += get_one_sqare_p(k, w-1);
+            sum += tmp / 2;
+        }
+        else
+            sum += get_one_sqare_p(i, j);
+    }
+    return sum;
+}
+
+
+int main() {
+    freopen("input.txt", "r", stdin);
+    scanf("%d", &t);
+
+    lg[0] = 0;
+    for(int i=1; i<MAX_LEN; i++) 
+        lg[i] = lg[i-1] + log2(i);
+    
+    for(int ce=1; ce<=t; ce++) {
+        scanf("%d%d%d%d%d%d", &w, &h, &l, &u, &r, &d);
+        double ans = solve();
+        printf("Case #%d: %lf\n", ce, ans);
+    }
+    return 0;
+}
+
 
 // TLE
 // float solve() {
@@ -51,20 +122,3 @@ float a[MAX_LEN], b[MAX_LEN];
 //     }
 //     return a[w];
 // }
-
-float solve() {
-    if(u == 0)
-
-}
-
-
-int main() {
-    freopen("input.txt", "r", stdin);
-    scanf("%d", &t);
-    for(int ce=1; ce<=t; ce++) {
-        scanf("%d%d%d%d%d%d", &w, &h, &l, &u, &r, &d);
-        float ans = solve();
-        printf("Case #%d: %f\n", ce, ans);
-    }
-    return 0;
-}
